@@ -67,13 +67,16 @@ public class Main {
 //        }
 
         //11 Employees with Multiple Projects
-        moreprojects(employees);
+//        moreprojects(employees);
 
         //12 Top 3 Highest Paid Employees
 //        List<Employee> dtos = highpay(employees);
 //        for (Employee dto : dtos) {
 //            System.out.println(dto);
 //        }
+
+        //13 Highest Paid Employee per Department
+        highestSalaryInDepartment(employees);
     }
 
     public static List<Employee> getHighPaidEngineers(List<Employee> employees) {
@@ -134,7 +137,7 @@ public class Main {
 
     public static void EmpNames(List<Employee> emp) {
         for (Employee e : emp) {
-            System.out.print(e.getName()+", ");
+            System.out.print(e.getName() + ", ");
         }
         System.out.println();
     }
@@ -149,19 +152,19 @@ public class Main {
         return a;
     }
 
-    public static Map<Object, List<Employee>> department(List<Employee> emp){
-        Map<Object, List<Employee>> a=new HashMap<>();
-        for(Employee e:emp) {
+    public static Map<Object, List<Employee>> department(List<Employee> emp) {
+        Map<Object, List<Employee>> a = new HashMap<>();
+        for (Employee e : emp) {
             String deptName = e.getDepartment().getName();
             a.computeIfAbsent(deptName, k -> new ArrayList<>()).add(e);
         }
         return a;
     }
 
-    public static Map<Object, Long> CountryCount(List<Employee> emp){
-        Map<Object, Long> a=new HashMap<>();
-        for(Employee e:emp) {
-            String coun=e.getAddress().getCountry();
+    public static Map<Object, Long> CountryCount(List<Employee> emp) {
+        Map<Object, Long> a = new HashMap<>();
+        for (Employee e : emp) {
+            String coun = e.getAddress().getCountry();
             a.put(coun, a.getOrDefault(coun, 0L) + 1);
         }
         return a;
@@ -170,7 +173,7 @@ public class Main {
     public static Map<String, Double> AvgSalary(List<Employee> emp) {
         Map<String, Double> totalSalary = new HashMap<>();
         Map<String, Integer> count = new HashMap<>();
-        
+
         for (Employee e : emp) {
             String dept = e.getDepartment().getName();
             totalSalary.put(dept, totalSalary.getOrDefault(dept, 0.0) + e.getSalary());
@@ -202,12 +205,12 @@ public class Main {
             int projectCount = e.getProjects().size(); // count of projects
 
             if (projectCount > 2) {
-                System.out.println("Employee Name: " + e.getName()+", Employee ID: " + e.getId()+", Department: " +e.getDepartment().getName()+", Number of Projects: " + projectCount);
+                System.out.println("Employee Name: " + e.getName() + ", Employee ID: " + e.getId() + ", Department: " + e.getDepartment().getName() + ", Number of Projects: " + projectCount);
             }
         }
     }
 
-    public static List<Employee> highpay(List<Employee> emp){
+    public static List<Employee> highpay(List<Employee> emp) {
         List<Employee> sortedEmployees = new ArrayList<>(emp);
         sortedEmployees.sort((e1, e2) -> Double.compare(e2.getSalary(), e1.getSalary()));
         // Get the top 3 highest paid employees
@@ -216,6 +219,39 @@ public class Main {
             top3.add(sortedEmployees.get(i));
         }
         return top3;
+    }
+
+    public static void highestSalaryInDepartment(List<Employee> emp) {
+        Map<String, List<Employee>> deptTopEarnersMap = new HashMap<>();
+        for (Employee e : emp) {
+            String deptName = e.getDepartment().getName();
+            double salary = e.getSalary();
+            deptTopEarnersMap.putIfAbsent(deptName, new ArrayList<>());
+            List<Employee> deptEmployees = deptTopEarnersMap.get(deptName);
+            if (deptEmployees.isEmpty()) {
+                deptEmployees.add(e);
+            } else {
+                // Find the current top salary in the department
+                double maxDeptSalary = deptEmployees.get(0).getSalary();
+                if (salary > maxDeptSalary) {
+                    // New highest salary for the department, replace the list
+                    deptEmployees.clear();
+                    deptEmployees.add(e);
+                } else if (salary == maxDeptSalary) {
+                    // If salary is equal to the max, add this employee to the list
+                    deptEmployees.add(e);
+                }
+            }
+        }
+        System.out.println("Departments");
+        for (Map.Entry<String, List<Employee>> entry : deptTopEarnersMap.entrySet()) {
+            String deptName = entry.getKey();
+            List<Employee> topEarners = entry.getValue();
+
+            for (Employee e : topEarners) {
+                System.out.println(deptName+" ->"+"  Name: " + e.getName()+"  ID: " + e.getId()+"  Salary: " + e.getSalary());
+            }
+        }
     }
 }
 
