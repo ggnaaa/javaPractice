@@ -67,12 +67,13 @@ public class Main {
 //        }
 
         //11 Employees with Multiple Projects
+        moreprojects(employees);
 
         //12 Top 3 Highest Paid Employees
-        List<Employee> dtos = highpay(employees);
-        for (Employee dto : dtos) {
-            System.out.println(dto);
-        }
+//        List<Employee> dtos = highpay(employees);
+//        for (Employee dto : dtos) {
+//            System.out.println(dto);
+//        }
     }
 
     public static List<Employee> getHighPaidEngineers(List<Employee> employees) {
@@ -194,6 +195,16 @@ public class Main {
             }
         }
         return employeesByProject;
+    }
+
+    public static void moreprojects(List<Employee> emp) {
+        for (Employee e : emp) {
+            int projectCount = e.getProjects().size(); // count of projects
+
+            if (projectCount > 2) {
+                System.out.println("Employee Name: " + e.getName()+", Employee ID: " + e.getId()+", Department: " +e.getDepartment().getName()+", Number of Projects: " + projectCount);
+            }
+        }
     }
 
     public static List<Employee> highpay(List<Employee> emp){
