@@ -66,6 +66,7 @@ public class Main {
 //            System.out.println(entry.getKey() + " => " + entry.getValue());
 //        }
 
+        //🔹 Advanced Filters and Combinations
         //11 Employees with Multiple Projects
 //        moreprojects(employees);
 
@@ -76,7 +77,16 @@ public class Main {
 //        }
 
         //13 Highest Paid Employee per Department
-        highestSalaryInDepartment(employees);
+//        highestSalaryInDepartment(employees);
+
+        //14 Employee Count per Department, Sorted Descending
+//        Empcount(employees);
+
+        //15 Find Duplicate Project Assignments
+//        ProjDuplicates(employees);
+
+        //🔹 Combining Address & Department
+        //16 Group by Country then Department
     }
 
     public static List<Employee> getHighPaidEngineers(List<Employee> employees) {
@@ -250,6 +260,49 @@ public class Main {
 
             for (Employee e : topEarners) {
                 System.out.println(deptName+" ->"+"  Name: " + e.getName()+"  ID: " + e.getId()+"  Salary: " + e.getSalary());
+            }
+        }
+    }
+
+    public static void Empcount(List<Employee> emp){
+        Map<String, Integer> deptEmployeeCount = new HashMap<>();
+
+        for (Employee e : emp) {
+            String deptName = e.getDepartment().getName();
+            deptEmployeeCount.put(deptName, deptEmployeeCount.getOrDefault(deptName, 0) + 1);
+        }
+
+        List<Map.Entry<String, Integer>> sortedDeptCounts = new ArrayList<>(deptEmployeeCount.entrySet());
+        sortedDeptCounts.sort((e1, e2) -> e2.getValue().compareTo(e1.getValue()));
+
+        System.out.println("Employee Count per Department (Descending):");
+        for (Map.Entry<String, Integer> entry : sortedDeptCounts) {
+            System.out.println(entry.getKey() + " -> " + entry.getValue());
+        }
+    }
+
+    public static void ProjDuplicates(List<Employee> emp){
+        Map<String, List<Employee>> projectToEmployees = new HashMap<>();
+
+        for (Employee e : emp) {
+            for (Project p : e.getProjects()) {
+                String projectId = p.getName();
+
+                projectToEmployees.putIfAbsent(projectId, new ArrayList<>());
+                projectToEmployees.get(projectId).add(e);
+            }
+        }
+
+        System.out.println("Duplicate Project Assignments:");
+        for (Map.Entry<String, List<Employee>> entry : projectToEmployees.entrySet()) {
+            List<Employee> assignedEmployees = entry.getValue();
+            if (assignedEmployees.size() > 1) {
+                System.out.println("Project ID: " + entry.getKey() + " is assigned to:");
+
+                for (Employee e : assignedEmployees) {
+                    System.out.println("  - " + e.getName() + " (ID: " + e.getId() + ")");
+                }
+                System.out.println("------------------------");
             }
         }
     }
